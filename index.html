@@ -1,0 +1,964 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+          integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="shortcut icon" href="https://www.flywire.com/media/img/favicon.ico"/>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script></script>
+
+    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    
+    <!-- SweetAlert JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+
+
+    <title>Flywire | Payment Link Generator</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            padding-top: 2em;
+        }
+    
+        .jumbotron {
+            background-color: #ffffff;
+            color: #2c3e50;
+            padding: 2.5em;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+    
+        .jumbotron h2 {
+            font-size: 2.25em;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+    
+        .jumbotron p {
+            font-size: 1.1em;
+            color: #5a5a5a;
+        }
+    
+        .btn-primary {
+            background-color: #0056b3;
+            border: 1px solid #004085;
+            padding: 0.5em 1.5em;
+            font-size: 1em;
+            border-radius: 4px;
+            color: #ffffff;
+            transition: background-color 0.15s ease-in-out;
+        }
+    
+        .btn-primary:hover {
+            background-color: #003d7a;
+        }
+    
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2em;
+        }
+    
+        .card-header {
+            background-color: #e9ecef;
+            border-bottom: 1px solid #dcdcdc;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+    
+        .card-body {
+            padding: 1.5em;
+            color: #333;
+        }
+    
+        .form-group label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+    
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 0.5em;
+            font-size: 1em;
+        }
+    
+        .alert {
+            border-radius: 4px;
+            font-size: 1em;
+        }
+    
+        .alert-secondary {
+            background-color: #f2f2f2;
+            color: #5a5a5a;
+        }
+    
+        .alert-success {
+            background-color: #d1ecf1;
+            color: #155724;
+        }
+    
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    
+        .btn {
+            font-size: 0.95em;
+            padding: 0.4em 1em;
+        }
+    
+        .modal-content {
+            background-color: #ffffff;
+            color: #333;
+            border-radius: 8px;
+        }
+    
+        .modal-title {
+            font-weight: 600;
+            color: #0056b3;
+        }
+    
+        .table {
+            color: #333;
+        }
+    
+        .table th {
+            font-weight: 600;
+            background-color: #f9f9f9;
+        }
+    
+        #block-form {
+            background-color: rgba(255, 255, 255, 0.8);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+        }
+    </style>
+    
+    
+</head>
+<body>
+
+<!-- Set the value of the field below to lock the page to one portal code. -->
+<input type="hidden" id="portalPreset" value="BEX" data-env="prod">
+
+<div class="container-lg">
+    <div class="jumbotron" style="background-color: #f8f9fa; color: #333; padding: 3em; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;">
+        <h2 style="font-size: 2.5em; font-weight: 600; margin-bottom: 0.5em;">Generador de Link Payments</h2>
+        <p style="font-size: 1.2em; margin-bottom: 1.5em;">Genera enlaces personalizados en solo unos clics.</p>
+        <a href="#" class="btn btn-primary" style="padding: 0.6em 1.2em; font-size: 1em; border-radius: 4px; background-color: #007bff; color: white; border: none; transition: background-color 0.2s;" onclick="showAlert()">Comenzar</a>
+    </div>
+    
+    <script>
+        function showAlert() {
+            swal({
+                title: "¡Atención!",
+                text: "Recuerda seleccionar la marca en Portal Code* para poder tener el enlace correcto del Payment.",
+                icon: "warning",
+                button: "Entendido",
+            });
+        }
+    </script>
+    
+    
+    
+
+    <div id="logo-display" style="display: none;"></div>
+
+    <div class="card">
+        <div class="card-header">
+            Complete los campos a continuación para crear un enlace de pago
+            <i class="form-required" style="display: block; float: right;">* required field</i>
+        </div>
+        <div class="card-body">
+            <div id="block-form">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-5 col-form-label">Environment</label>
+                <div class="col-sm-7">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-secondary active">
+                            <input type="radio" name="env" id="prod" value="prod" checked> Production
+                        </label>
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="env" value="demo" id="demo"> Demo
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <form id="generator-form">
+                <div class="form-group row">
+                    <label for="recipient" class="col-sm-5 col-form-label">Portal Code<i class="form-required">*</i></label>
+                    <div class="col-sm-7">
+                        <select class="form-control" name="recipient" id="recipient">
+                            <option value="">Seleccione una opción</option>
+                            <option value="BEW">Universidad Autónoma de Chile (BEW)</option>
+                            <option value="BEX">Baltic Education Center ITAE (BEX)</option>
+                            <option value="BEZ">Baltic Education Center (BEZ)</option>
+                            <option value="JJX">Carver University (JJX)</option>
+                            <option value="MKQ">Madison Open Knowledge Corp. (MKQ)</option>
+                            <option value="NZC">Carver University (NZC)</option>
+                            <option value="OGC">Carver University US (OGC)</option>
+                            <option value="ZBL">Blackwell (ZBL)</option>
+                        </select>
+                                            </div>
+                </div>
+                <!--<div class="form-group row">
+                    <label for="payment_destination" class="col-sm-5 col-form-label">Subdomain<i class="form-required">*</i></label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" name="payment_destination" id="payment_destination" placeholder="e.g. flywireclient"/>
+                    </div>
+                </div>-->
+                <div class="form-group row">
+                    <label for="amount" class="col-sm-4 col-form-label">Amount to pay</label>
+                    <div class="col-sm-1 col-row-actions"><div class="row-action-icons"><i class="fas fa-fw fa-lock" title="User will not be able to edit this field.  Click to toggle."></i></div></div>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" name="amount" id="amount" placeholder="e.g. 1000.00"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="max_amount" class="col-sm-5 col-form-label">Maximum Amount</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" name="max_amount" id="max_amount" placeholder="e.g. 9999.00"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="return_cta" class="col-sm-5 col-form-label">Return CTA URL</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" name="return_cta" id="return_cta" placeholder="e.g. http://www.university.edu/pay" maxlength="500"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="return_cta_name" class="col-sm-5 col-form-label">Return CTA Text</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" name="return_cta_name" id="return_cta_name" placeholder="Text to be displayed as button. Default is &quot;Return to <institution>&quot;." maxlength="500"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="callback_url" class="col-sm-5 col-form-label">Callback URL</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" name="callback_url" id="callback_url" placeholder="URL to send real-time status updates to e.g. http://www.university.edu/callback" maxlength="500"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="callback_id" class="col-sm-5 col-form-label">Callback ID</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" name="callback_id" id="callback_id" placeholder="Unique id for the transaction" maxlength="500"/>
+                    </div>
+                </div>
+                <div class="form-group row" id="customFieldFormActions">
+                    <label class="col-sm-5 col-form-label"></label>
+                    <div class="col-sm-7">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customFieldModal">
+                            <i class="fas fa-plus-circle" title="Add any custom field"></i> Add Field
+                        </button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importModal" id="btn-open-import-modal">
+                            <i class="fas fa-cloud-download-alt" title="Import a portal configuration"></i> Import Portal
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="form-reset-button">
+                            <i class="fas fa-undo-alt" title="Reset the form to original values"></i> Reset Form
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="alert alert-secondary" id="display-container" role="alert">
+        <div id="result-container">
+            <span id="result">Fill out all required fields to see the result</span>
+        </div>
+        <div id="actions-container">
+            <button type="button" class="btn btn-success btn-sm" onclick="copyLink()">
+                <i class="far fa-fw fa-copy"></i>
+                Copy Link
+            </button>
+            <button type="button" class="btn btn-success btn-sm" onclick="openLink()">
+                <i class="fas fa-fw fa-external-link-alt"></i>
+                Open Link
+            </button>
+        </div>
+        <div id="error-container">
+            <span id="error"></span>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="customFieldModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Custom Field</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" id="custom-error-display" style="display: none;">
+                    <i class="fas fa-exclamation"></i><span></span>
+                </div>
+                <form id="custom-field-form">
+                    <div class="form-group">
+                        <label for="label">Label <i class="form-required">*</i></label>
+                        <input type="text" class="form-control" name="label" id="label" placeholder="The name of the field as it will appear to the user"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="internalName">Internal Name <i class="form-required">*</i></label>
+                        <input type="text" class="form-control" name="internalName" id="internalName" placeholder="Lowercase and underscores only e.g. student_full_name"/>
+                    </div>
+                    <!--<div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" name="isReadOnly" id="isReadOnly" checked>
+                            <label class="custom-control-label" for="isReadOnly">Field cannot be edited by user</label>
+                        </div>
+                    </div>-->
+                    <div class="form-group">
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" name="isRequired" id="isRequired">
+                            <label class="custom-control-label" for="isRequired">Field is required</label>
+                        </div>
+                    </div>
+                    <input type="submit" style="display: none;">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-field-button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="importModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Portal Configuration</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" id="import-error-display" style="display: none;">
+                    <i class="fas fa-exclamation"></i><span></span>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>Query the Flywire server for an existing portal configuration and import the settings into this link generator.
+                </div>
+
+                <form id="import-portal-form">
+                    <div class="form-group">
+                        <label for="portalCode">Portal Code <i class="form-required">*</i></label>
+                        <input type="text" class="form-control" name="portalCode" id="portalCode" placeholder="3-letter code assigned by Flywire e.g. FLC" maxlength="3"/>
+                    </div>
+                </form>
+
+                <div class="loading-indicator">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+
+                <table class="table" id="portal-preview">
+                    <colgroup>
+                        <col style="width: 180px;">
+                        <col style="width: auto;">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <th>Environment:</th>
+                        <td class="js-env"></td>
+                    </tr>
+                    <tr>
+                        <th>Institution Name:</th>
+                        <td class="js-name"></td>
+                    </tr>
+                    <tr>
+                        <th>Portal Code:</th>
+                        <td class="js-code"></td>
+                    </tr>
+                    <tr>
+                        <th>Subdomain:</th>
+                        <td class="js-subdomain"></td>
+                    </tr>
+                    <tr>
+                        <th>Fields:</th>
+                        <td class="portal-fields-cell">
+                            <table class="table portal-fields">
+                                <thead>
+                                <tr>
+                                    <th>Label</th>
+                                    <th>Internal Name</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-config-button" disabled>Import</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let payload = {};
+
+    const resultElement = document.getElementById('result'),
+        resultContainerElement = document.getElementById('result-container'),
+        errorElement = document.getElementById('error'),
+        errorContainerElement = document.getElementById('error-container'),
+        actionsContainerElement = document.getElementById('actions-container'),
+        displayContainerElement = document.getElementById('display-container'),
+        lockedMsg = 'User will not be able to edit this field.  Click to toggle.',
+        unlockedMsg = 'User will be able to edit this field.  Click to toggle.';
+
+    /* Events */
+
+    document.getElementById('save-field-button').addEventListener('click', handleSaveClick);
+    document.getElementById('custom-field-form').addEventListener('submit', handleSaveClick);
+
+    document.getElementById('portalCode').addEventListener('input', handlePortalInput);
+    document.querySelectorAll('input[name=env]').forEach(item => {
+        item.addEventListener('click', handleEnvChange);
+    })
+
+    document.getElementById('save-config-button').addEventListener('click', handleImportSubmit);
+    document.getElementById('import-portal-form').addEventListener('submit', handleImportSubmit);
+
+    // Agrega aquí el evento de cambio del combo box de recipient
+document.getElementById('recipient').addEventListener('change', function (e) {
+    generateLink({
+        id: 'recipient',
+        value: e.target.value,
+        isReadOnly: false
+    });
+});
+    // TODO: Add a hidden field that can contain a portal code.  If the code exists, load that portal on page load.
+    // TODO: Reverse link generator - parse a given URL to populate form fields
+
+    // document.getElementById('importModal').addEventListener('show.bs.modal', handleImportModalShown);
+
+    $('#customFieldModal').on('shown.bs.modal', e => document.getElementById('label').focus());
+    $('#importModal').on('shown.bs.modal', handleImportModalShown);
+
+    document.getElementById('form-reset-button').addEventListener('click', () => {
+        resetGeneratorForm();
+        showNothing();
+    });
+
+    document.addEventListener('input', function(e) {
+        if (e.target.matches('form#generator-form input[type=text]'))
+            handleInputChange.call(e.target, e);
+    }, false);
+
+    document.getElementById('generator-form').addEventListener('click', function(e) {
+        if (e.target.matches('.row-action-icons i.fa-trash-alt'))
+            handleDeleteClick.call(e.target, e);
+    }, false);
+
+    document.getElementById('generator-form').addEventListener('click', function(e) {
+        if (e.target.matches('.row-action-icons i.fa-lock') || e.target.matches('.row-action-icons i.fa-lock-open'))
+            handleLockClick.call(e.target, e);
+    }, false);
+
+
+    /* Event Handlers */
+
+    const handleInputChange = debounce(e => {
+        const target = e.target,
+            isReadOnly = target.closest('.form-group').querySelector('.fa-lock') !== null;
+
+        if (target.id === 'recipient') {
+            target.value = target.value.toUpperCase();
+        }
+
+        generateLink({
+            id: target.id,
+            value: target.value,
+            isReadOnly
+        });
+    }, 400);
+
+    function handleSaveClick(e) {
+        e.preventDefault();
+
+        const form = document.getElementById('custom-field-form'),
+        formData = new FormData(form),
+        errorDisplay = document.getElementById('custom-error-display');
+
+        errorDisplay.querySelector('span').innerHTML = '';
+        errorDisplay.style.display = 'none';
+
+        let myField = {},
+        errorMsg = '';
+        for (let [key, value] of formData) {
+            myField[key] = value;
+        }
+
+        // simple validation
+        if (!myField.internalName) {
+            errorMsg += 'Internal Name is required. ';
+        } else if (!/^[a-z0-9_]+$/.test(myField.internalName)) {
+            errorMsg += 'Internal Name must be lowercase (a-z), numbers and underscores only. '
+        }
+
+        if (!myField.label) {
+            errorMsg += 'Label is required.';
+        }
+
+        if (errorMsg !== '') {
+            errorDisplay.querySelector('span').innerHTML = errorMsg;
+            errorDisplay.style.display = 'block';
+            return;
+        }
+
+        // create new custom field HTML
+        createCustomField(myField, '#customFieldFormActions');
+
+        // reset custom field form
+        form.reset();
+        $('#customFieldModal').modal('hide');
+    }
+
+    function handleDeleteClick (e) {
+        const formGroup = e.target.closest('.form-group.row'),
+            label = formGroup.querySelector('label');
+
+        if (window.confirm(`Are you sure you want to delete the field "${label.innerText}"?`)) {
+            formGroup.parentNode.removeChild(formGroup);
+        }
+    }
+
+    function handleLockClick (e) {
+        const icon = e.target,
+            field = icon.closest('.form-group').querySelector('input[type=text]');
+        let isReadOnly = e.target.classList.contains('fa-lock');
+
+        if (isReadOnly) {
+            icon.classList.remove('fa-lock');
+            icon.classList.add('fa-lock-open');
+            icon.setAttribute('title', unlockedMsg);
+            isReadOnly = false;
+        } else {
+            icon.classList.remove('fa-lock-open');
+            icon.classList.add('fa-lock');
+            icon.setAttribute('title', lockedMsg);
+            isReadOnly = true;
+        }
+
+        generateLink({
+            id: field.id,
+            value: field.value,
+            isReadOnly
+        });
+    }
+
+    function handleEnvChange (e) {
+        generateLink();
+    }
+
+    function handlePortalInput (e) {
+        const target = e.target,
+            code = target.value.toUpperCase();
+
+        if (code.length < 3) return;
+
+        const isProd = document.querySelector('input[name="env"]:checked').value === 'prod',
+            demoURL = isProd ? '' : '.demo',
+            errorDisplay = document.getElementById('import-error-display'),
+            errorDisplayMsg = errorDisplay.querySelector('span'),
+            spinner = document.querySelector('#importModal .loading-indicator'),
+            previewTable = document.getElementById('portal-preview'),
+            importBtn = document.getElementById('save-config-button');
+
+        errorDisplayMsg.innerHTML = '';
+        errorDisplay.style.display = 'none';
+
+        target.value = target.value.toUpperCase();
+
+        const request = new XMLHttpRequest();
+        request.open('GET', `https://payment${demoURL}.flywire.com/v3/recipients/${code}`);
+
+        previewTable.style.display = 'none';
+        document.querySelector('.portal-fields tbody').innerHTML = '';
+        spinner.style.display = 'flex';
+
+        request.onload = function() {
+            spinner.style.display = 'none';
+
+            if (this.status >= 200 && this.status < 400) {
+                // Success!
+                const data = JSON.parse(this.response);
+
+                errorDisplayMsg.innerHTML = '';
+                errorDisplay.style.display = 'none';
+
+                importBtn.setAttribute('data-portal', JSON.stringify(data));
+                previewPortalImport(data);
+            } else if (this.status === 404) {
+                // Portal not found
+                errorDisplayMsg.innerHTML = `Portal "${code}" was not found on ${isProd ? 'production' : 'demo'}.  Did you mean to search ${isProd ? 'demo' : 'production'}?`;
+                errorDisplay.style.display = 'block';
+            } else {
+                errorDisplayMsg.innerHTML = "Sorry, an unknown error has occurred.  Please try again later.";
+                errorDisplay.style.display = 'block';
+            }
+        };
+
+        request.onerror = function() {
+            errorDisplayMsg.innerHTML = "Sorry, an unknown error has occurred.  Please try again later.";
+            errorDisplay.style.display = 'block';
+        };
+
+        request.send();
+    }
+
+    function handleImportSubmit(e) {
+        e.preventDefault();
+        const data = JSON.parse(document.getElementById('save-config-button').getAttribute('data-portal'));
+
+        $('#importModal').modal('hide');
+        importPortal(data);
+    }
+
+    function handleImportModalShown(e) {
+        const form = document.getElementById('import-portal-form'),
+            previewTable = document.getElementById('portal-preview'),
+            portalField = document.getElementById('portalCode'),
+            errorDisplay = document.getElementById('import-error-display'),
+            errorDisplayMsg = errorDisplay.querySelector('span');
+
+        form.reset();
+        previewTable.style.display = 'none';
+        errorDisplayMsg.innerHTML = '';
+        errorContainerElement.style.display = 'none';
+        portalField.focus();
+    }
+
+    /* Functions */
+
+    function generateLink(item) {
+        const isProd = document.querySelector('input[name="env"]:checked').value === 'prod',
+            readOnly = [];
+
+        if (!!item) {
+            if ((item.id === 'amount' || item.id === 'max_amount') && !isNaN(item.value))
+                item.value = (parseNumber(item.value) * 100).toFixed(0);
+
+            payload[item.id] = item;
+        }
+
+        const recipientValue = document.getElementById('recipient').value;
+if (!recipientValue || !payload['amount']) {
+    showNothing();
+}
+ else if (!!payload.amount && !!payload.amount.value && isNaN(payload.amount.value)) {
+            showError(`"${payload.amount.value}" is not a valid amount.  Please enter the amount in cents as a whole number.`);
+        } else if (!!payload.max_amount && !!payload.max_amount.value && isNaN(payload.max_amount.value)) {
+            showError(`"${payload.max_amount.value}" is not a valid amount.  Please enter the max amount in cents as a whole number.`);
+        } else {
+            let url = isProd ? 'https://payment.flywire.com/pay/payment?' : 'https://payment.demo.flywire.com/pay/payment?';
+
+            for (const propName in payload) {
+                url += `${propName}=${encodeURIComponent(payload[propName].value)}&`;
+                if (payload[propName].isReadOnly) readOnly.push(propName)
+            }
+
+            if (readOnly.length)
+                url += `read_only=${readOnly.join()}&`;
+
+            showResult(url.slice(0, -1));
+        }
+    }
+
+    function previewPortalImport(data) {
+        const previewTable = document.getElementById('portal-preview'),
+            fieldsTable = document.querySelector('.table.portal-fields tbody'),
+            saveBtn = document.getElementById('save-config-button'),
+            isProd = document.querySelector('input[name="env"]:checked').value === 'prod';
+        let isReq = false;
+
+        document.querySelector('.js-env').innerHTML = isProd ? 'Production' : 'Demo';
+        document.querySelector('.js-name').innerHTML = data.name;
+        document.querySelector('.js-code').innerHTML = data.id;
+        document.querySelector('.js-subdomain').innerHTML = data.subdomain;
+
+        let field, row, labelCell, nameCell;
+
+        for (let i = 0; i < data.fields.length; i++) {
+            field = data.fields[i];
+            isReq = field.required;
+            row = document.createElement('tr');
+            labelCell = document.createElement('td');
+            nameCell = document.createElement('td');
+
+            labelCell.innerHTML = `${isReq ? '<i class="field-required">' : ''}${field.view_options.label}${isReq ? '</i>' : ''}`;
+            row.appendChild(labelCell);
+
+            nameCell.innerHTML = `${isReq ? '<i class="field-required">' : ''}${field.id}${isReq ? '</i>' : ''}`;
+            row.appendChild(nameCell);
+
+            fieldsTable.appendChild(row);
+        }
+
+        previewTable.style.display = 'table';
+
+        saveBtn.removeAttribute('disabled');
+    }
+
+    function createCustomField(data, targetSelector) {
+        let fragment = new DocumentFragment(),
+            group = document.createElement('div'),
+            label = document.createElement('label'),
+            actionsCol = document.createElement('div'),
+            actionsDiv = document.createElement('div'),
+            // lockIcon = document.createElement('i'),
+            deleteIcon = document.createElement('i'),
+            inputCol = document.createElement('div'),
+            input = document.createElement('input'),
+            isEditable = !data.isReadOnly,
+            isRequired = !!data.isRequired && data.isRequired === 'on',
+            requiredIndicator = document.createElement('i');
+
+        group.classList.add('form-group','row', 'form-custom');
+        fragment.appendChild(group);
+        label.classList.add('col-sm-4','col-form-label');
+        label.setAttribute('for', data.internalName);
+        label.innerHTML = data.label;
+        group.appendChild(label);
+        actionsCol.classList.add('col-sm-1','col-row-actions');
+        group.appendChild(actionsCol);
+        actionsDiv.classList.add('row-action-icons');
+        actionsCol.appendChild(actionsDiv);
+        // lockIcon.classList.add('fas','fa-fw', isEditable ? 'fa-lock-open' : 'fa-lock');
+        // lockIcon.setAttribute('title', isEditable ? unlockedMsg : lockedMsg);
+        deleteIcon.classList.add('fas','fa-fw', 'fa-trash-alt');
+        deleteIcon.setAttribute('title', 'Click to delete this field.')
+        // actionsDiv.appendChild(lockIcon);
+        actionsDiv.appendChild(deleteIcon);
+        inputCol.classList.add('col-sm-7');
+        group.appendChild(inputCol);
+        input.classList.add('form-control');
+        input.setAttribute('type','text');
+        input.setAttribute('id', data.internalName);
+        if (!!data.hint) input.setAttribute('placeholder', data.hint);
+        inputCol.appendChild(input);
+        // TODO: display fields with value[] property as dropdowns
+
+        if (isRequired) {
+            requiredIndicator.classList.add('form-required');
+            requiredIndicator.innerHTML = '*';
+            label.appendChild(requiredIndicator);
+            input.setAttribute('required', '');
+        }
+
+        return document.querySelector(targetSelector).insertAdjacentElement('beforebegin', group);
+    }
+
+    function importPortal(data) {
+        let field;
+        const logoEl = document.getElementById('logo-display');
+
+        // reset
+        resetGeneratorForm();
+        logoEl.style.backgroundImage = 'none';
+        logoEl.style.display = 'none';
+        //TODO: move reset into window close handler to prevent flash of old data
+
+        payload = {};
+
+        document.getElementById('recipient').value = data.id;
+        payload.recipient = { id: 'recipient', value: data.id, isReadOnly: false };
+        // document.getElementById('payment_destination').value = data.subdomain;
+        // payload.payment_destination = { id: 'payment_destination', value: data.subdomain, isReadOnly: false };
+
+        //TODO: Add support for field patterns
+        //TODO: Show currency symbol for imported portal (remember to clear on reset)
+
+        for (let i = 0; i < data.fields.length; i++) {
+            field = data.fields[i];
+
+            createCustomField({
+                label: field.view_options.label,
+                internalName: field.id,
+                hint: field.view_options.hint,
+                isReadOnly: true,
+                isRequired: field.required
+            }, '#customFieldFormActions');
+        }
+
+       /* eliminado if (!!data.logo_url) {
+            logoEl.style.backgroundImage = `url(${data.logo_url})`;
+            logoEl.style.display = 'block';
+        }*/
+
+        generateLink();
+    }
+
+    function copyLink() {
+        const url = resultElement.innerText;
+        let tempElement = document.createElement('textarea');
+        tempElement.value = url;
+        tempElement.setAttribute('readonly', '');
+        tempElement.style.position = 'absolute';
+        tempElement.styleleft = '-9999px';
+        document.body.appendChild(tempElement);
+        tempElement.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempElement);
+
+            // Mostrar alerta de SweetAlert
+    swal({
+        title: "¡Enlace Copiado!",
+        text: "El enlace ha sido copiado al portapapeles.",
+        icon: "success",
+        button: "Aceptar",
+    });
+    }
+
+    function openLink() {
+        window.open(resultElement.innerText, '_blank');
+    }
+
+    function showResult(result) {
+        resultElement.innerHTML = result;
+        errorContainerElement.style.display = 'none';
+        actionsContainerElement.style.display = 'flex';
+        resultContainerElement.style.display = 'block';
+
+        displayContainerElement.classList.remove('alert-secondary','alert-danger');
+        displayContainerElement.classList.add('alert-success');
+    }
+
+    function showError(error) {
+        errorElement.innerHTML = error;
+        errorContainerElement.style.display = 'block';
+        actionsContainerElement.style.display = 'none';
+        resultContainerElement.style.display = 'none';
+
+        displayContainerElement.classList.remove('alert-secondary','alert-success');
+        displayContainerElement.classList.add('alert-danger');
+    }
+
+    function showNothing() {
+        resultElement.innerHTML = "Fill out all required fields to see the result";
+        errorContainerElement.style.display = 'none';
+        actionsContainerElement.style.display = 'none';
+        resultContainerElement.style.display = 'block';
+
+        displayContainerElement.classList.remove('alert-danger','alert-success');
+        displayContainerElement.classList.add('alert-secondary');
+    }
+
+    /* Utilities */
+
+    function debounce(callback, wait) {
+        let timeout;
+        return (...args) => {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => callback.apply(context, args), wait);
+        };
+    }
+
+    function parseNumber(value) {
+        const example = Intl.NumberFormat(navigator.language).format(1.1);
+        const cleanPattern = new RegExp('[^-+0-9' + example.charAt(1) + ']', 'g');
+        const cleaned = value.replace(cleanPattern, '');
+        const normalized = cleaned.replace(example.charAt(1), '.');
+        return parseFloat(normalized);
+    }
+
+    function resetGeneratorForm() {
+        const form = document.getElementById('generator-form'),
+            customFieldRows = document.querySelectorAll('.form-custom');
+
+        customFieldRows.forEach(row => row.parentNode.removeChild(row));
+
+        form.reset();
+
+        /*//reset Bootstrap radio button
+        for (let radio of document.querySelectorAll('input[name="env"]')) {
+            if (radio.checked && !radio.parentNode.classList.contains('active'))
+                radio.parentNode.classList.add('active');
+            else if (!radio.checked && radio.parentNode.classList.contains('active'))
+                radio.parentNode.classList.remove('active');
+        }*/
+    }
+
+    $( document ).ready(function() {
+        const portalPreset = document.getElementById('portalPreset');
+
+        if ( portalPreset.value !== '' )
+            loadDefaultPortal( portalPreset.value, portalPreset.getAttribute('data-env') );
+    });
+
+    function loadDefaultPortal(code, env) {
+        const demoURL = (env === 'prod') ? '' : '.demo',
+            spinner = document.getElementById('block-form');
+
+        document.getElementById('btn-open-import-modal').style.display = 'none';
+
+        const request = new XMLHttpRequest();
+        request.open('GET', `https://payment${demoURL}.flywire.com/v3/recipients/${code}`);
+
+        spinner.style.display = 'flex';
+
+        request.onload = function() {
+            if (this.status >= 200 && this.status < 400) {
+                $(`input[name=env][value=${env}]`).closest('.btn').button('toggle');
+                const data = JSON.parse(this.response);
+                importPortal(data);
+                //document.getElementById('recipient').setAttribute('disabled', '');
+            } else if (this.status === 404) {
+                console.error(`Unable to load details for portal ${code} on ${env}`);
+            } else {
+                console.error("Sorry, an unknown error has occurred.  Please try again later.");
+            }
+
+            spinner.style.display = 'none';
+        };
+
+        request.onerror = function() {
+            console.error("Sorry, an unknown error has occurred.  Please try again later.");
+            spinner.style.display = 'none';
+        };
+
+        request.send();
+    }
+</script>
+</body>
+</html>
